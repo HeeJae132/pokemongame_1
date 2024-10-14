@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="utf-8">
+   <title>포켓몬 맞추기</title>
+   <style>
+      body {
+         background-image: url('웹인터배경.png');
+         margin: 0; 
+         display: flex;
+         flex-direction: column;
+         align-items: center; 
+      }
+
+      h1 {
+         text-align: center;
+         font-family: 'DungGeunMo', sans-serif;
+         color: white;
+         margin-top: 160px;
+         margin-bottom: 10px;
+         font-size: 72px; 
+      }
+
+      #title {
+         text-align: center;
+         font-family: 'DungGeunMo', sans-serif;
+         margin-top: 10px;
+         font-size: 30px; 
+         color: black;
+      }
+
+      .card-container {
+         display: flex; 
+         justify-content: center; 
+         gap: 60px; 
+         margin-top: 60px; 
+      }
+
+      .card {
+         width: 320px; 
+         height: 360px;
+         border-radius: 10px; 
+         overflow: hidden;       
+      }
+
+      .card img {
+         width: 100%; 
+         height: auto; 
+      }
+
+      #cursor {
+         position: absolute;
+         transform: translate(-50%, -50%);
+         pointer-events: none;
+      }
+
+      #rotate {
+         animation: rotate 2s infinite linear;
+         width: 110px; 
+         height: 115px; 
+         background: url('마스터볼.png') no-repeat center;
+         background-size: contain;
+      }
+
+      @keyframes rotate {
+         to {
+            transform: rotate(360deg);
+         }
+      }
+
+      #modal {
+         display: none;
+         position: fixed;
+         top: 50%;
+         left: 50%;
+         transform: translate(-50%, -50%);
+         background: rgba(255, 255, 255, 0.9);
+         border: 2px solid #333;
+         padding: 20px;
+         z-index: 1000; 
+         border-radius: 10px;
+         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+         width: 500px;
+         text-align: center; 
+      }
+
+      #modal h1 {
+         margin: 0;
+         font-size: 24px;
+         color: black;
+      }
+
+      #modal img {
+         max-width: 100%;
+         height: auto;
+      }
+
+      #modal p {
+         margin: 10px 0;
+      }
+
+      textarea {
+         padding: 10px; 
+         border-radius: 5px; 
+         border: 1px solid #ccc; 
+         font-size: 16px;
+         font-family: 'DungGeunMo', sans-serif;
+         resize: none;
+         margin-top: 10px;
+         width: 90%; 
+      }
+
+      button {
+         margin-top: 10px; 
+         padding: 10px; 
+         border: none; 
+         border-radius: 5px; 
+         background-color: #007BFF; 
+         color: white; 
+         font-size: 16px; 
+         cursor: pointer; 
+         font-family: 'DungGeunMo', sans-serif;
+      }
+
+      button:hover {
+         background-color: #0056b3; 
+      }
+
+      .close-button {
+         background-color: #dc3545; 
+      }
+
+      .close-button:hover {
+         background-color: #c82333;
+      }
+
+      .audio-controls {
+         margin-top: 20px;
+         display: flex;
+         align-items: center;
+         gap: 10px;
+         font-family: 'DungGeunMo', sans-serif;
+         color: white;
+         
+      }
+
+      .volume-slider {
+         width: 150px;
+      }
+
+   </style>
+</head>
+<body>
+   
+   <h1>포켓몬 맞추기</h1>
+   <div id="title">카드를 클릭해서 포켓몬을 맞춰보세요!</div>
+   
+   <div class="audio-controls">
+      <button id="playPauseBtn">노래 재생</button>
+      <button id="stopBtn">노래 중지</button>
+      <label for="volumeControl">볼륨:</label>
+      <input type="range" id="volumeControl" class="volume-slider" min="0" max="1" step="0.1" value="1">
+   </div>
+
+   
+   <audio id="bgm" src="포켓몬노래.mp3"></audio>
+   
+   <div class="card-container">
+      <div class="card"> 
+         <img src="포켓몬카드.png" alt="포켓몬 1">
+      </div>
+      <div class="card">
+         <img src="포켓몬카드.png" alt="포켓몬 2">
+      </div>
+      <div class="card"> 
+         <img src="포켓몬카드.png" alt="포켓몬 3">
+      </div>
+      <div class="card"> 
+         <img src="포켓몬카드.png" alt="포켓몬 4">
+      </div>
+   </div>
+   
+   <div id="cursor">
+      <div id="rotate"></div>
+   </div>
+
+   <div id="modal"></div>
+    
+   <script type="text/javascript">
+      var cursorX;
+      var cursorY;
+
+      window.onmousemove = function(e) {
+         cursorX = e.clientX;
+         cursorY = e.clientY;
+      };
+
+      loop();
+      
+      function loop() {
+         var cs = getComputedStyle(cursor);
+         var cx = parseInt(cs.left);
+         var cy = parseInt(cs.top); 
+         cursor.style.left = cx + (cursorX - cx) / 10 + "px";
+         cursor.style.top = cy + (cursorY - cy) / 10 + "px";
+         
+         window.requestAnimationFrame(loop);
+      }
+      
+      let pokemon = [
+          {"title": "문제 1번", "generation": "1", "type": "전기", "tall": "0.4m", "weight": "6kg", "image": "문제1번.png", "answer": "꼬리를 안고 자는 피카츄"},
+          {"title": "문제 2번", "generation": "1", "type": "노말", "tall": "0.4m", "weight": "4.2kg", "image": "문제2번.png", "answer": "살찐 나옹"},
+          {"title": "문제 3번", "generation": "1", "type": "노말", "tall": "0.3m", "weight": "4.0kg", "image": "문제3번.png", "answer": "춤추는 메타몽"},
+          {"title": "문제 4번", "generation": "1", "type": "물", "tall": "0.5m", "weight": "9.0kg", "image": "문제4번.png", "answer": "꼬부기"}
+      ];
+
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+         card.onclick = function() {
+            showModal(index);
+         };
+      });
+
+      function showModal(i) {
+         modal.innerHTML = `
+            <h1>${pokemon[i]["title"]}</h1>
+            <img src="${pokemon[i]["image"]}" alt="포켓몬 이미지">
+            <p>${pokemon[i]["generation"]}세대 포켓몬이다.</p>
+            <p>${pokemon[i]["type"]}타입이다. 크기는 ${pokemon[i]["tall"]}이다. 무게는 ${pokemon[i]["weight"]}이다.</p>
+            <textarea placeholder="무슨 포켓몬일까요?" rows="4"></textarea>
+            <button id="submitAnswer">제출</button>
+            <button class="close-button" id="closeModal">닫기</button>
+         `;
+         modal.style.display = "block";
+
+         document.getElementById('submitAnswer').onclick = function() {
+            const answer = modal.querySelector('textarea').value.trim();
+            if (answer === pokemon[i]["answer"]) {
+                alert("정답입니다!");
+            } else {
+              
+                if (i === 0) {
+                   window.location.href = "h1one.html";
+                } else if (i === 1) {
+                   window.location.href = "h2two.html";
+                } else if (i === 2) {
+                   window.location.href = "h3three.html";
+                } else if (i === 3) {
+                   window.location.href = "h4four.html";
+                }
+            }
+            modal.style.display = "none"; 
+         };
+ 
+         document.getElementById('closeModal').onclick = function() {
+            modal.style.display = "none"; 
+         };
+      }
+
+      const bgm = document.getElementById('bgm');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      let isPlaying = false;
+
+      playPauseBtn.onclick = function() {
+         if (isPlaying) {
+            bgm.pause();
+            playPauseBtn.textContent = "노래 재생";
+         } else {
+            bgm.play();
+            playPauseBtn.textContent = "노래 일시정지";
+         }
+         isPlaying = !isPlaying;
+      };
+
+      stopBtn.onclick = function() {
+         bgm.pause();
+         bgm.currentTime = 0;  
+         playPauseBtn.textContent = "노래 재생";
+         isPlaying = false;
+      };
+
+      const volumeControl = document.getElementById('volumeControl');
+      volumeControl.oninput = function() {
+         bgm.volume = volumeControl.value;
+      };
+   </script>
+</body>
+</html>

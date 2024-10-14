@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>땡</title>
+
+    <style>
+        body {
+            background-image: url('웹인터배경.png');
+            margin: 0; 
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            font-family: 'DungGeunMo', sans-serif;
+            color: white;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 72px; 
+        }
+
+        #title {
+            text-align: center;
+            font-family: 'DungGeunMo', sans-serif;
+            margin-top: 10px;
+            font-size: 30px; 
+            color: black;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 40px; 
+        }
+
+        button {
+            margin-top: 60px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            font-family: 'DungGeunMo', sans-serif;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #cursor {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        #rotate {
+            animation: rotate 2s infinite linear;
+            width: 110px; 
+            height: 115px; 
+            background: url('마스터볼.png') no-repeat center;
+            background-size: contain;
+        }
+
+        @keyframes rotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style> 
+</head>
+<body>
+    <h1>오답입니다!</h1>
+    <div id="title">정답은...<p>살찐 나옹</p></div>
+    <img src="문제2번정답.png" alt="정답 이미지">
+
+    
+    <button onclick="goToNextPage()">뒤로가기</button>
+
+    <div id="cursor">
+      <div id="rotate"></div>
+   </div>
+
+   <script type="text/javascript">
+      var cursorX;
+      var cursorY;
+
+      window.onmousemove = function(e) {
+         cursorX = e.clientX;
+         cursorY = e.clientY;
+      };
+
+      loop();
+
+      function loop() {
+         var cs = getComputedStyle(cursor);
+         var cx = parseInt(cs.left);
+         var cy = parseInt(cs.top); 
+         cursor.style.left = cx + (cursorX - cx) / 10 + "px";
+         cursor.style.top = cy + (cursorY - cy) / 10 + "px";
+         
+         window.requestAnimationFrame(loop);
+      }
+
+     
+      function goToNextPage() {
+         window.location.href = "hi.html";  
+      }
+    </script>
+
+</body>
+</html>
